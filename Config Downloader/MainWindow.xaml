@@ -2,6 +2,120 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Config Downloader" 
+        Closing="Window_Closing_1" 
+        Icon="Source/Icon/ECTunes Logo.ico" 
+        ResizeMode="CanMinimize"
+    AllowsTransparency="True"
+    Background="Transparent"
+    WindowStyle="None"
+    SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen" MouseLeftButtonDown="mainWindow_MouseLeftButtonDown">
+    <Border CornerRadius="0"
+        BorderBrush="#FFB9B9B9"
+        BorderThickness="1"
+        Margin="24"
+        Background="White">
+        <Border.Effect>
+            <DropShadowEffect Color="Gray"
+                Opacity=".50"
+                ShadowDepth="16" />
+        </Border.Effect>
+        <Grid x:Name="gridBackground" VerticalAlignment="Top" Background="White" HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="21*"/>
+                <RowDefinition Height="227*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TabControl HorizontalAlignment="Left" Margin="10,0,0,10" Width="880" Background="White" Foreground="Black" BorderBrush="#FFC9C9C9" Grid.Row="1">
+                <TabItem Header="Database" Background="White" IsSelected="True">
+                    <Grid Background="White" HorizontalAlignment="Left" Width="872" Margin="0,0,0,0" Height="428">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="283*"/>
+                            <ColumnDefinition Width="586*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="38*"/>
+                            <RowDefinition Height="369*"/>
+                        </Grid.RowDefinitions>
+                        <Label x:Name="lblDatabase" Content="Database" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" FontSize="18" FontWeight="Bold"/>
+                        <TreeView x:Name="tvDatabaseView" HorizontalAlignment="Left" Width="284" Height="388" Margin="0,0,0,0" VerticalAlignment="Top" MouseDoubleClick="tvDatabaseView_MouseDoubleClick" FontSize="12" FontWeight="Normal" Grid.Column="0" Grid.Row="1"/>
+                        <Grid x:Name="gridConnected" HorizontalAlignment="Left" Height="3" VerticalAlignment="Top" Width="284" Background="Red" Grid.Column="0" Grid.Row="1"/>
+                        <Button x:Name="btnDeleteFromDatabase" Content="Delete" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="50" FontSize="12" FontWeight="Normal" Click="btnDeleteFromDatabase_Click" Background="White" Grid.Column="0" Height="22" Grid.Row="1"/>
+                        <Grid Grid.Column="1" HorizontalAlignment="Left" Height="418" Grid.RowSpan="2" VerticalAlignment="Top" Width="585" Margin="0,10,0,-21">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="503*"/>
+                                <ColumnDefinition Width="82*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="15*"/>
+                                <RowDefinition Height="95*"/>
+                                <RowDefinition Height="15*"/>
+                                <RowDefinition Height="95*"/>
+                            </Grid.RowDefinitions>
+                            <Label x:Name="lvlParameter" Content="Parameter" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="12" FontWeight="Bold" Grid.Row="0" Margin="0,0,0,0" Grid.ColumnSpan="2"/>
+                            <Button x:Name="btnToXml" Content="Write Xml" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="btnToXml_Click" FontSize="12" FontWeight="Normal" Background="White" Grid.Column="2"/>
+                            <DataGrid x:Name="dgvDatabaseParam" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Top" FontSize="12" FontWeight="Normal" Grid.Row="1" Grid.ColumnSpan="2" Height="183" Grid.RowSpan="2" Width="570"/>
+                            <Label x:Name="lblSignal" Content="Signal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,0" Width="45" FontSize="12" FontWeight="Bold" Grid.Row="2"/>
+                            <DataGrid x:Name="dgcDatabaseSignal" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Top" FontSize="12" FontWeight="Normal" Grid.Row="3" Grid.ColumnSpan="2" Height="181" Width="570"/>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Xml File" Background="White" IsSelected="True">
+                    <Grid Background="White" HorizontalAlignment="Left" Width="872" Margin="0,0,0,0" Height="428">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="283*"/>
+                            <ColumnDefinition Width="586*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="38*"/>
+                            <RowDefinition Height="369*"/>
+                        </Grid.RowDefinitions>
+                        <Label x:Name="lblXml" Content="Xml File" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" FontSize="18" FontWeight="Bold"/>
+                        <TreeView x:Name="tvXmlView" HorizontalAlignment="Left" Width="284" Height="388" Margin="0,0,0,0" VerticalAlignment="Top" MouseDoubleClick="tvXmlView_MouseDoubleClick" FontSize="12" FontWeight="Normal" Grid.Column="0" Grid.Row="1"/>
+                        <GroupBox x:Name="gbxSelectedCar" Header="Selected Car" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Top" Height="102" Width="301" FontWeight="Normal" FontSize="12" BorderBrush="#FFCDD4D8" Grid.Row="1" Grid.Column="2">
+                            <Grid HorizontalAlignment="Left" Height="85" Margin="0,0,-2,-5" VerticalAlignment="Top" Width="291">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="12*"/>
+                                    <ColumnDefinition Width="35*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label x:Name="lvlXmlCarSelectedCustomer" Content="Customer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,1,0,0" Height="26" Width="60" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
+                                <Label x:Name="lvlXmlCarSelectedCar" Content="Car" HorizontalAlignment="Left" Margin="0,27,0,0" VerticalAlignment="Top" Height="26" Width="28" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
+                                <Label x:Name="lvlXmlCarSelectedVersion" Content="Version" HorizontalAlignment="Left" Margin="0,53,0,0" VerticalAlignment="Top" Height="26" Width="50" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
+                                <TextBox x:Name="tbxXmlCarSelectedCustomer" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,3,0,0" Grid.Column="2"/>
+                                <TextBox x:Name="tbxXmlCarSelectedCar" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,29,0,0" Grid.Column="2"/>
+                                <TextBox x:Name="tbxXmlCarSelectedVersion" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,55,0,0" Grid.Column="2"/>
+                            </Grid>
+                        </GroupBox>
+                        <Button x:Name="btnSaveToDatabase" Content="Upload" HorizontalAlignment="Left" Margin="502,0,0,0" VerticalAlignment="Top" Width="75" Click="btnSaveToDatabase_Click" FontWeight="Normal" FontSize="12" Grid.Column="2" Height="22" Background="{x:Null}">
+
+                        </Button>
+                        <Button x:Name="btnDeleteFromXml" Content="Delete" HorizontalAlignment="Left" Margin="209,366,0,0" VerticalAlignment="Top" Width="75" FontSize="12" FontWeight="Normal" Click="btnDeleteFromXml_Click" Grid.Row="1" Height="22" Background="{x:Null}"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+            <Grid HorizontalAlignment="Left" Height="26" Margin="0,0,0,0" VerticalAlignment="Top" Width="900">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="34*"/>
+                    <ColumnDefinition Width="238*"/>
+                    <ColumnDefinition Width="401*"/>
+                    <ColumnDefinition Width="227*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="lblTitle" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Config Downloader" FontWeight="Bold" Height="26" Width="120" Grid.Column="1"/>
+                <Label x:Name="lblConnectionString" VerticalAlignment="Top" HorizontalAlignment="Left" Content="" Height="26" Grid.Column="2" FontWeight="Bold"/>
+                <Button x:Name="btnExit" BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="19" Click="btnExit_Click" Background="#FFB04949" Margin="0,0,0,0" Grid.Column="3" SnapsToDevicePixels="True" FontWeight="Bold" FontFamily="BatmanForeverAlternate" ToolTip="Close"/>
+                <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="16" Margin="6,6,0,-10" VerticalAlignment="Top" Width="16" Source="Source/Icon/ECTunes Logo.ico"/>
+                <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="btnRefresh_Click" Background="White" Grid.ColumnSpan="2" Grid.Column="1" Margin="189,63,0,-59"/>
+            </Grid>
+        </Grid>
+    </Border>
+
+    <!--<Window x:Name="mainWindow" x:Class="Config_Downloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Config Downloader" 
         Height="534" 
         Width="947" 
         Closing="Window_Closing_1" 
@@ -12,102 +126,106 @@
     WindowStyle="None"
     SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen" MouseLeftButtonDown="mainWindow_MouseLeftButtonDown">
-    <Border x:Name="border" CornerRadius="10"
+        <Border x:Name="border" CornerRadius="10"
         BorderBrush="Gray"
         BorderThickness="3"
         Margin="24"
         Padding="4">
-        <Border.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#FFBDC0C9" Offset="0"/>
-                <GradientStop Color="White" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.Background>
-        <Border.Effect>
-            <DropShadowEffect Color="Gray"
-                Opacity=".50"
-                ShadowDepth="16" />
-        </Border.Effect>
-        <Grid x:Name="gridBackground" Height="505" VerticalAlignment="Top" Margin="0,0,2,-1">
-            <Grid.Background>
+            <Border.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFBDC0C9" Offset="0"/>
                     <GradientStop Color="White" Offset="1"/>
                 </LinearGradientBrush>
-            </Grid.Background>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <TabControl HorizontalAlignment="Left" Height="485" Margin="10,10,0,0" VerticalAlignment="Top" Width="910" Background="#FFE6E6E6">
-                <TabItem Header="Database">
-                    <GroupBox Header="Database" Margin="0,1,0,6" FontSize="18" FontWeight="Bold">
-                        <Grid Background="#FFE5E5E5" HorizontalAlignment="Left" Width="872" Margin="0,0,-2,-1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <TreeView x:Name="tvDatabaseView" HorizontalAlignment="Left" Height="396" Margin="10,10,0,0" VerticalAlignment="Top" Width="283" MouseDoubleClick="tvDatabaseView_MouseDoubleClick" FontSize="12" FontWeight="Normal"/>
-                            <DataGrid x:Name="dgvDatabaseParam" HorizontalAlignment="Left" Margin="298,32,0,0" VerticalAlignment="Top" Height="175" Width="574" FontSize="12" FontWeight="Normal"/>
-                            <DataGrid x:Name="dgcDatabaseSignal" HorizontalAlignment="Left" Margin="298,231,0,0" VerticalAlignment="Top" Height="175" Width="574" FontSize="12" FontWeight="Normal"/>
-                            <Label x:Name="lvlParameter" Content="Parameter" HorizontalAlignment="Left" Margin="298,10,0,0" VerticalAlignment="Top" Width="69" FontSize="12" FontWeight="Bold"/>
-                            <Label x:Name="lblSignal" Content="Signal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="298,207,0,0" Width="45" FontSize="12" FontWeight="Bold"/>
-                            <Button x:Name="btnToXml" Content="Write Xml" HorizontalAlignment="Left" Margin="796,0,0,0" VerticalAlignment="Top" Width="75" Click="btnToXml_Click" FontSize="12" FontWeight="Normal">
-                                <Button.Effect>
-                                    <DropShadowEffect Color="Gray"
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect Color="Gray"
+                Opacity=".50"
+                ShadowDepth="16" />
+            </Border.Effect>
+            <Grid x:Name="gridBackground" Height="505" VerticalAlignment="Top" Margin="0,0,2,-1">
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFBDC0C9" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TabControl HorizontalAlignment="Left" Height="485" Margin="10,10,0,0" VerticalAlignment="Top" Width="910" Background="#FFE6E6E6">
+                    <TabItem Header="Database">
+                        <GroupBox Header="Database" Margin="0,1,0,6" FontSize="18" FontWeight="Bold">
+                            <Grid Background="#FFE5E5E5" HorizontalAlignment="Left" Width="872" Margin="0,0,-2,-1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TreeView x:Name="tvDatabaseView" HorizontalAlignment="Left" Height="396" Margin="10,10,0,0" VerticalAlignment="Top" Width="283" MouseDoubleClick="tvDatabaseView_MouseDoubleClick" FontSize="12" FontWeight="Normal"/>
+                                <DataGrid x:Name="dgvDatabaseParam" HorizontalAlignment="Left" Margin="298,32,0,0" VerticalAlignment="Top" Height="175" Width="574" FontSize="12" FontWeight="Normal"/>
+                                <DataGrid x:Name="dgcDatabaseSignal" HorizontalAlignment="Left" Margin="298,231,0,0" VerticalAlignment="Top" Height="175" Width="574" FontSize="12" FontWeight="Normal"/>
+                                <Label x:Name="lvlParameter" Content="Parameter" HorizontalAlignment="Left" Margin="298,10,0,0" VerticalAlignment="Top" Width="69" FontSize="12" FontWeight="Bold"/>
+                                <Label x:Name="lblSignal" Content="Signal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="298,207,0,0" Width="45" FontSize="12" FontWeight="Bold"/>
+                                <Button x:Name="btnToXml" Content="Write Xml" HorizontalAlignment="Left" Margin="796,0,0,0" VerticalAlignment="Top" Width="75" Click="btnToXml_Click" FontSize="12" FontWeight="Normal">
+                                    <Button.Effect>
+                                        <DropShadowEffect Color="Gray"
             				Opacity=".50"
             				ShadowDepth="5" />
-                                </Button.Effect>
-                            </Button>
-                            <Button x:Name="btnDeleteFromDatabase" Content="Delete" HorizontalAlignment="Left" Margin="218,384,0,0" VerticalAlignment="Top" Width="75" FontSize="12" FontWeight="Normal" Click="btnDeleteFromDatabase_Click"/>
-                        </Grid>
-                    </GroupBox>
-                </TabItem>
-                <TabItem Header="Xml File">
-                    <GroupBox Header="Xml File" Margin="0,1,0,6" FontSize="18" FontWeight="Bold">
-                        <Grid Background="#FFE5E5E5">
-                            <TreeView x:Name="tvXmlView" HorizontalAlignment="Left" Height="396" Margin="10,10,0,0" VerticalAlignment="Top" Width="283" MouseDoubleClick="tvXmlView_MouseDoubleClick" FontWeight="Normal" FontSize="12"/>
-                            <GroupBox x:Name="gbxSelectedCar" Header="Selected Car" HorizontalAlignment="Left" Margin="313,32,0,0" VerticalAlignment="Top" Height="102" Width="301" FontWeight="Normal" FontSize="12">
-                                <Grid HorizontalAlignment="Left" Height="85" Margin="0,0,-2,-5" VerticalAlignment="Top" Width="291">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="12*"/>
-                                        <ColumnDefinition Width="35*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label x:Name="lvlXmlCarSelectedCustomer" Content="Customer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,1,0,0" Height="26" Width="60" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
-                                    <Label x:Name="lvlXmlCarSelectedCar" Content="Car" HorizontalAlignment="Left" Margin="0,27,0,0" VerticalAlignment="Top" Height="26" Width="28" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
-                                    <Label x:Name="lvlXmlCarSelectedVersion" Content="Version" HorizontalAlignment="Left" Margin="0,53,0,0" VerticalAlignment="Top" Height="26" Width="50" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
-                                    <TextBox x:Name="tbxXmlCarSelectedCustomer" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,3,0,0" Grid.Column="2"/>
-                                    <TextBox x:Name="tbxXmlCarSelectedCar" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,29,0,0" Grid.Column="2"/>
-                                    <TextBox x:Name="tbxXmlCarSelectedVersion" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,55,0,0" Grid.Column="2"/>
-                                </Grid>
-                            </GroupBox>
-                            <Button x:Name="btnSaveToDatabase" Content="Upload" HorizontalAlignment="Left" Margin="796,0,0,0" VerticalAlignment="Top" Width="75" Click="btnSaveToDatabase_Click" FontWeight="Normal" FontSize="12">
-                                <Button.Effect>
-                                    <DropShadowEffect Color="Gray"
+                                    </Button.Effect>
+                                </Button>
+                                <Button x:Name="btnDeleteFromDatabase" Content="Delete" HorizontalAlignment="Left" Margin="218,384,0,0" VerticalAlignment="Top" Width="75" FontSize="12" FontWeight="Normal" Click="btnDeleteFromDatabase_Click"/>
+                            </Grid>
+                        </GroupBox>
+                    </TabItem>
+                    <TabItem Header="Xml File">
+                        <GroupBox Header="Xml File" Margin="0,1,0,6" FontSize="18" FontWeight="Bold">
+                            <Grid Background="#FFE5E5E5">
+                                <TreeView x:Name="tvXmlView" HorizontalAlignment="Left" Height="396" Margin="10,10,0,0" VerticalAlignment="Top" Width="283" MouseDoubleClick="tvXmlView_MouseDoubleClick" FontWeight="Normal" FontSize="12"/>
+                                <GroupBox x:Name="gbxSelectedCar" Header="Selected Car" HorizontalAlignment="Left" Margin="313,32,0,0" VerticalAlignment="Top" Height="102" Width="301" FontWeight="Normal" FontSize="12">
+                                    <Grid HorizontalAlignment="Left" Height="85" Margin="0,0,-2,-5" VerticalAlignment="Top" Width="291">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="12*"/>
+                                            <ColumnDefinition Width="35*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label x:Name="lvlXmlCarSelectedCustomer" Content="Customer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,1,0,0" Height="26" Width="60" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
+                                        <Label x:Name="lvlXmlCarSelectedCar" Content="Car" HorizontalAlignment="Left" Margin="0,27,0,0" VerticalAlignment="Top" Height="26" Width="28" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
+                                        <Label x:Name="lvlXmlCarSelectedVersion" Content="Version" HorizontalAlignment="Left" Margin="0,53,0,0" VerticalAlignment="Top" Height="26" Width="50" Grid.Column="1" FontWeight="Normal" FontSize="12"/>
+                                        <TextBox x:Name="tbxXmlCarSelectedCustomer" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,3,0,0" Grid.Column="2"/>
+                                        <TextBox x:Name="tbxXmlCarSelectedCar" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,29,0,0" Grid.Column="2"/>
+                                        <TextBox x:Name="tbxXmlCarSelectedVersion" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,55,0,0" Grid.Column="2"/>
+                                    </Grid>
+                                </GroupBox>
+                                <Button x:Name="btnSaveToDatabase" Content="Upload" HorizontalAlignment="Left" Margin="796,0,0,0" VerticalAlignment="Top" Width="75" Click="btnSaveToDatabase_Click" FontWeight="Normal" FontSize="12">
+                                    <Button.Effect>
+                                        <DropShadowEffect Color="Gray"
             				Opacity=".50"
             				ShadowDepth="5" />
-                                </Button.Effect>
-                            </Button>
-                            <Button x:Name="btnDeleteFromXml" Content="Delete" HorizontalAlignment="Left" Margin="218,384,0,0" VerticalAlignment="Top" Width="75" FontSize="12" FontWeight="Normal" Click="btnDeleteFromXml_Click"/>
-                        </Grid>
-                    </GroupBox>
-                </TabItem>
-            </TabControl>
-            <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Margin="733,7,0,0" VerticalAlignment="Top" Width="75" Click="btnRefresh_Click" Height="22">
-                <Button.Effect>
-                    <DropShadowEffect Color="Gray"
+                                    </Button.Effect>
+                                </Button>
+                                <Button x:Name="btnDeleteFromXml" Content="Delete" HorizontalAlignment="Left" Margin="218,384,0,0" VerticalAlignment="Top" Width="75" FontSize="12" FontWeight="Normal" Click="btnDeleteFromXml_Click"/>
+                            </Grid>
+                        </GroupBox>
+                    </TabItem>
+                </TabControl>
+                <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Margin="733,7,0,0" VerticalAlignment="Top" Width="75" Click="btnRefresh_Click" Height="22">
+                    <Button.Effect>
+                        <DropShadowEffect Color="Gray"
             				Opacity=".50"
             				ShadowDepth="5" />
-                </Button.Effect>
-            </Button>
-            <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="818,7,0,0" VerticalAlignment="Top" Width="75" Click="btnExit_Click">
-                <Button.Effect>
-                    <DropShadowEffect Color="Gray"
+                    </Button.Effect>
+                </Button>
+                <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="818,7,0,0" VerticalAlignment="Top" Width="75" Click="btnExit_Click">
+                    <Button.Effect>
+                        <DropShadowEffect Color="Gray"
             				Opacity=".50"
             				ShadowDepth="5" />
-                </Button.Effect>
-            </Button>
-            <Grid x:Name="gridConnected" HorizontalAlignment="Left" Height="3" VerticalAlignment="Top" Width="283" Background="Red" Margin="31,70,0,0"/>
-            <Label x:Name="lblConnectionString" VerticalAlignment="Top" HorizontalAlignment="Left" Content="" Margin="220,7,0,0" FontWeight="Bold"/>
-        </Grid>
-    </Border>
+                    </Button.Effect>
+                </Button>
+                <Grid x:Name="gridConnected" HorizontalAlignment="Left" Height="3" VerticalAlignment="Top" Width="283" Background="Red" Margin="31,70,0,0"/>
+                <Label x:Name="lblConnectionString" VerticalAlignment="Top" HorizontalAlignment="Left" Content="" Margin="220,7,0,0" FontWeight="Bold"/>
+            </Grid>
+        </Border>
+    </Window>-->
+
+
+
 </Window>

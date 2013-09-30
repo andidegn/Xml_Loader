@@ -1,29 +1,23 @@
-﻿using ECTunes.Database.ConfigLibrary;
+﻿using Config_Downloader.View;
+using ECTunes.Database.ConfigLibrary;
 using ECTunes.Database.Util;
 using ECTunes.Util;
 using ECTunesDB.model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Security.Authentication;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml;
-using Config_Downloader.View;
-using System.Security.Authentication;
 
 namespace Config_Downloader {
     /// <summary>
@@ -70,11 +64,6 @@ namespace Config_Downloader {
         };
 
         public MainWindow() {
-
-
-
-
-
             // Creating the IDictionary to set the port on the channel instance.
             IDictionary props = new Hashtable();
             if (REQUIRE_LOGIN) {
@@ -83,7 +72,6 @@ namespace Config_Downloader {
             }
             else
                 loggedIn = true;
-
 
             InitializeComponent();
             InitRest();

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ECTunesDB.model;
+using System;
 using System.Collections.Generic;
-using System.Xml;
-using ECTunesDB.model;
 using System.Windows;
+using System.Xml;
 
 namespace ECTunes.Util {
     public static class XmlParser {

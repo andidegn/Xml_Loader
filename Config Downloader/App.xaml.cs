@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Config_Downloader.View;
 
 namespace Config_Downloader {
     /// <summary>

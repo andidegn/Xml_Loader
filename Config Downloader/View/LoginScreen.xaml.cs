@@ -19,6 +19,7 @@ namespace Config_Downloader.View {
     public partial class LoginScreen : Window {
         public LoginScreen() {
             InitializeComponent();
+            FocusManager.SetFocusedElement(this, tbxPassword);
         }
 
         public String GetPassword() {

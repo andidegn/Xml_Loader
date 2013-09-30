@@ -138,7 +138,6 @@ namespace Config_Downloader {
                             //    NoConnection("InitRest()", ex);
                             //    break;
                             //}
-                            throw;
                         }
                     } while (!connected);
                     //if (Dispatcher.invokere)
@@ -373,6 +372,10 @@ namespace Config_Downloader {
         private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e) {
             connectThread.Abort();
         }
+
+        private void mainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            DragMove();
         #endregion
+        }
     }
 }

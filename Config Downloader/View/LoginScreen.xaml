@@ -8,7 +8,7 @@
     Background="Transparent"
     WindowStyle="None"
     SizeToContent="WidthAndHeight"
-    FocusManager.FocusedElement= "{Binding ElementName=txtUserName}">
+    FocusManager.FocusedElement= "{Binding ElementName=txbPassword}">
     <Border CornerRadius="10"
         BorderBrush="Gray"
         BorderThickness="3"
@@ -68,7 +68,7 @@
                     <Button.Effect>
                         <DropShadowEffect Color="Gray"
             				Opacity=".50"
-            				ShadowDepth="8" />
+            				ShadowDepth="5" />
                     </Button.Effect>
                 </Button>
                 <Button x:Name="btnCancel"
@@ -78,7 +78,7 @@
                     <Button.Effect>
                         <DropShadowEffect Color="Gray"
                 			Opacity=".50"
-                			ShadowDepth="8" />
+                			ShadowDepth="5" />
                     </Button.Effect>
                 </Button>
             </StackPanel>

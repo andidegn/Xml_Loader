@@ -22,6 +22,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using Config_Downloader.View;
+using System.Security.Authentication;
 
 namespace Config_Downloader {
     /// <summary>
@@ -58,6 +60,7 @@ namespace Config_Downloader {
         public static bool DEBUG = true;
 
         bool connected;
+        bool loggedIn;
 
         IDbConnectorRemote db;
 
@@ -67,50 +70,75 @@ namespace Config_Downloader {
         };
 
         public MainWindow() {
-            // Creating a custom formatter for a TcpChannel sink chain.
-            BinaryClientFormatterSinkProvider provider = new BinaryClientFormatterSinkProvider();
+
+
+
+
+
             // Creating the IDictionary to set the port on the channel instance.
             IDictionary props = new Hashtable();
-            props["port"] = 0;
             if (REQUIRE_LOGIN) {
                 props["username"] = DbConnector.USERNAME;
-                props["password"] = "ECTunesConfigServerAccess";
+                props["password"] = ShowLoginDialog();
             }
+            else
+                loggedIn = true;
 
-            // Pass the properties for the port setting and the server provider in the server chain argument. (Client remains null here.)
-            TcpClientChannel channel = new TcpClientChannel(props, provider);
-
-            ChannelServices.RegisterChannel(channel, true);
 
             InitializeComponent();
             InitRest();
-            connectThread = new Thread(new ThreadStart(() => TryConnect()));
+            connectThread = new Thread(new ThreadStart(() => TryConnect(props)));
             connectThread.Start();
             if (DEBUG) lblConnectionString.Content = connectionString;
         }
 
+        private String ShowLoginDialog() {
+            LoginScreen ls = new LoginScreen();
+            ls.ShowDialog();
+            if (ls.DialogResult.HasValue && ls.DialogResult.Value) {
+                loggedIn = true;
+                return ls.GetPassword();
+            }
+            else {
+                loggedIn = false;
+                Application.Current.Shutdown();
+            }
+            return null;
+        }
+
         private void InitRest() {
             databaseCarSelected = false;
-            UpdateDatabaseTreeView();
             UpdateXmlTreeview();
         }
 
         private delegate void udbvDelegate();
 
-        private void TryConnect() {
+        private void TryConnect(IDictionary props) {
+            // Creating a custom formatter for a TcpChannel sink chain.
+            BinaryClientFormatterSinkProvider provider = new BinaryClientFormatterSinkProvider();
+            // Pass the properties for the port setting and the server provider in the server chain argument. (Client remains null here.)
+            TcpClientChannel channel = new TcpClientChannel(props, provider);
+
+            ChannelServices.RegisterChannel(channel, true);
             //int counter = 0;
+            if (loggedIn)
             while (true) {
                 if (!connected) {
                     do {
                         try {
                             db = (DbConnector)Activator.GetObject(typeof(DbConnector), connectionString);
                             connected = db.IsConnected();
-                        } catch (Exception ex) {
+                        }
+                        catch (InvalidCredentialException) {
+
+                        }
+                        catch (Exception ex) {
                             Thread.Sleep(2500);
                             //if (counter++ >= RETRY_ATTEMPTS) {
                             //    NoConnection("InitRest()", ex);
                             //    break;
                             //}
+                            throw;
                         }
                     } while (!connected);
                     //if (Dispatcher.invokere)
@@ -333,7 +361,9 @@ namespace Config_Downloader {
         }
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e) {
-            InitRest();
+            databaseCarSelected = false;
+            UpdateDatabaseTreeView();
+            UpdateXmlTreeview();
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e) {

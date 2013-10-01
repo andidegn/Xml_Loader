@@ -18,6 +18,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
+using System.Security.Principal;
 
 namespace Config_Downloader {
     /// <summary>
@@ -54,7 +55,7 @@ namespace Config_Downloader {
         public static bool DEBUG = true;
 
         bool connected;
-        bool loggedIn;
+        bool loggedIn = false;
 
         IDbConnectorRemote db;
 
@@ -64,18 +65,11 @@ namespace Config_Downloader {
         };
 
         public MainWindow() {
-            // Creating the IDictionary to set the port on the channel instance.
-            IDictionary props = new Hashtable();
-            if (REQUIRE_LOGIN) {
-                props["username"] = DbConnector.USERNAME;
-                props["password"] = ShowLoginDialog();
-            }
-            else
-                loggedIn = true;
-
+            SetupChannel(ShowLoginDialog());
             InitializeComponent();
             InitRest();
-            connectThread = new Thread(new ThreadStart(() => TryConnect(props)));
+            connectThread = new Thread(new ThreadStart(() => TryConnect()));
+            connectThread.SetApartmentState(ApartmentState.STA);
             connectThread.Start();
             if (DEBUG) lblConnectionString.Content = connectionString;
         }
@@ -84,14 +78,33 @@ namespace Config_Downloader {
             LoginScreen ls = new LoginScreen();
             ls.ShowDialog();
             if (ls.DialogResult.HasValue && ls.DialogResult.Value) {
-                loggedIn = true;
                 return ls.GetPassword();
             }
             else {
-                loggedIn = false;
                 Application.Current.Shutdown();
             }
             return null;
+        }
+        String channelName = "tcp";
+        int channelNumber = 0;
+        private void SetupChannel(String password) {
+            IDictionary props = new Hashtable();
+            props["port"] = 0;
+            props["name"] = channelName + channelNumber;
+            props["timeout"] = 2000;
+            props["retryCount"] = 15;
+            if (REQUIRE_LOGIN) {
+                props["username"] = DbConnector.USERNAME;
+                props["password"] = password;
+            }
+
+            BinaryClientFormatterSinkProvider provider = new BinaryClientFormatterSinkProvider();
+            TcpClientChannel channel = new TcpClientChannel(props, provider);
+            if (ChannelServices.GetChannel(channelName + (channelNumber - 1)) != null)
+                ChannelServices.UnregisterChannel(ChannelServices.GetChannel(channelName + (channelNumber - 1)));
+            ChannelServices.RegisterChannel(channel, true);
+            channelNumber++;
+            loggedIn = true;
         }
 
         private void InitRest() {
@@ -101,37 +114,20 @@ namespace Config_Downloader {
 
         private delegate void udbvDelegate();
 
-        private void TryConnect(IDictionary props) {
-            // Creating a custom formatter for a TcpChannel sink chain.
-            BinaryClientFormatterSinkProvider provider = new BinaryClientFormatterSinkProvider();
-            // Pass the properties for the port setting and the server provider in the server chain argument. (Client remains null here.)
-            TcpClientChannel channel = new TcpClientChannel(props, provider);
-
-            ChannelServices.RegisterChannel(channel, true);
-            //int counter = 0;
-            if (loggedIn)
+        private void TryConnect() {
             while (true) {
-                if (!connected) {
-                    do {
-                        try {
-                            db = (DbConnector)Activator.GetObject(typeof(DbConnector), connectionString);
-                            connected = db.IsConnected();
-                        }
-                        catch (InvalidCredentialException) {
-
-                        }
-                        catch (Exception ex) {
-                            Thread.Sleep(2500);
-                            //if (counter++ >= RETRY_ATTEMPTS) {
-                            //    NoConnection("InitRest()", ex);
-                            //    break;
-                            //}
-                        }
-                    } while (!connected);
-                    //if (Dispatcher.invokere)
+                while (loggedIn && !connected) {
+                    try {
+                        db = (IDbConnectorRemote)Activator.GetObject(typeof(IDbConnectorRemote), connectionString);
+                        connected = db.IsConnected();
                         Dispatcher.BeginInvoke(new udbvDelegate(UpdateDatabaseTreeView));
-                    //else
-                    //    UpdateDatabaseTreeView();
+                    }
+                    catch (InvalidCredentialException ex1) {
+                        loggedIn = false;
+                    }
+                    catch (Exception ex2) {
+                        Thread.Sleep(2500);
+                    }
                 }
                 Thread.Sleep(500);
             }
@@ -178,7 +174,8 @@ namespace Config_Downloader {
                         UpdateXmlTreeview();
                         UpdateDatabaseTreeView();
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     NoConnection("SaveToDatabase()", ex);
                 }
         }
@@ -206,7 +203,7 @@ namespace Config_Downloader {
                         cus.Header = customer.name;
                         List<CarDC> carQuery = db.GetCars(customer.customerId);
                         foreach (var car in carQuery) {
-                            cus.Items.Add(new TreeViewItem() { Header = car.name + CAR_VERSION_SEPERATOR + car.version.ToString(XmlParser.VERSION_FORMAT) } );
+                            cus.Items.Add(new TreeViewItem() { Header = car.name + CAR_VERSION_SEPERATOR + car.version.ToString(XmlParser.VERSION_FORMAT) });
                         }
                         tvDatabaseView.Items.Add(cus);
                     }
@@ -228,13 +225,14 @@ namespace Config_Downloader {
                     cus.Header = customerNode.Name;
                     foreach (XmlNode carNode in customerNode) {
                         if (carNode.Attributes.Count > 0)
-                            cus.Items.Add(new TreeViewItem() { Header = carNode.Name + CAR_VERSION_SEPERATOR + carNode.Attributes[0].Value } );
+                            cus.Items.Add(new TreeViewItem() { Header = carNode.Name + CAR_VERSION_SEPERATOR + carNode.Attributes[0].Value });
                         else
-                            cus.Items.Add(new TreeViewItem() { Header = carNode.Name } );
+                            cus.Items.Add(new TreeViewItem() { Header = carNode.Name });
                     }
                     tvXmlView.Items.Add(cus);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 ShowError("An error occurred while trying to read 'myXmlFile.xml'.\n\rPlease make sure the file is accessible in: ..\\files\\\n");
             }
         }
@@ -259,18 +257,22 @@ namespace Config_Downloader {
                 DateTime version;
                 SplitNameVersion(selectedNode, out carName, out version);
                 if (ShowConfirmDelete("car", selectedNode.Header.ToString())) {
-                    if ( source == Source.DB ? db.DeleteCar(customerName, carName, version) : XmlParser.DeleteCar(customerName, carName, version)) {
+                    if (source == Source.DB ? db.DeleteCar(customerName, carName, version) : XmlParser.DeleteCar(customerName, carName, version)) {
                         InitRest();
-                    } else
+                        UpdateDatabaseTreeView();
+                    }
+                    else
                         MessageBox.Show("An error has occurred!");
                 }
             }
             else {
                 String customerName = selectedNode.Header.ToString();
                 if (ShowConfirmDelete("customer", customerName) && MessageBox.Show("Are you absolutely sure you want to delete this customer?\n All this customers cars will also be deleted!", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) {
-                    if ( source == Source.DB ? db.DeleteCustomer(customerName) : XmlParser.DeleteCustomer(customerName)) {
+                    if (source == Source.DB ? db.DeleteCustomer(customerName) : XmlParser.DeleteCustomer(customerName)) {
                         InitRest();
-                    } else
+                        UpdateDatabaseTreeView();
+                    }
+                    else
                         MessageBox.Show("An error has occurred!");
                 }
             }
@@ -305,12 +307,13 @@ namespace Config_Downloader {
                     signal = db.GetSignalList(car.carId);
                     dgcDatabaseSignal.ItemsSource = signal;
                     databaseCarSelected = true;
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     NoConnection("tvDatabaseView_MouseDoubleClick(object sender, MouseEventArgs e)", ex);
                 }
             }
         }
-        
+
         private void tvXmlView_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             TreeViewItem selectedNode = tvXmlView.SelectedItem as TreeViewItem;
             if (selectedNode != null && selectedNode.Parent as TreeViewItem != null) {
@@ -345,6 +348,10 @@ namespace Config_Downloader {
 
         private void btnDeleteFromXml_Click(object sender, RoutedEventArgs e) {
             Delete(tvXmlView.SelectedItem as TreeViewItem, Source.XML);
+        }
+
+        private void btnConneft_Click(object sender, RoutedEventArgs e) {
+            SetupChannel(ShowLoginDialog());
         }
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e) {

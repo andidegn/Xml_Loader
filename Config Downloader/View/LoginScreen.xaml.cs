@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace Config_Downloader.View {
     /// <summary>
     /// Interaction logic for LoginScreen.xaml
-    /// </summary>
+    /// </summary> 
     public partial class LoginScreen : Window {
         public LoginScreen() {
             InitializeComponent();

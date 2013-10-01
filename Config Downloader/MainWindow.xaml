@@ -89,13 +89,17 @@
                                 <TextBox x:Name="tbxXmlCarSelectedVersion" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,55,0,0" Grid.Column="2"/>
                             </Grid>
                         </GroupBox>
-                        <Button x:Name="btnSaveToDatabase" Content="Upload" HorizontalAlignment="Left" Margin="502,0,0,0" VerticalAlignment="Top" Width="75" Click="btnSaveToDatabase_Click" FontWeight="Normal" FontSize="12" Grid.Column="2" Height="22" Background="{x:Null}">
+                        <Button x:Name="btnSaveToDatabase" Content="Upload" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Click="btnSaveToDatabase_Click" FontWeight="Normal" FontSize="12" Grid.Column="2" Height="22" Background="{x:Null}">
 
                         </Button>
                         <Button x:Name="btnDeleteFromXml" Content="Delete" HorizontalAlignment="Left" Margin="209,366,0,0" VerticalAlignment="Top" Width="75" FontSize="12" FontWeight="Normal" Click="btnDeleteFromXml_Click" Grid.Row="1" Height="22" Background="{x:Null}"/>
                     </Grid>
                 </TabItem>
             </TabControl>
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Height="22" Margin="138,63,0,0" VerticalAlignment="Top" Width="160" Grid.RowSpan="2">
+                <Button x:Name="btnConneft" Content="Connect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Background="{x:Null}" Margin="0, 0, 10, 0" Click="btnConneft_Click"/>
+                <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="btnRefresh_Click" Background="{x:Null}"/>
+            </StackPanel>
             <Grid HorizontalAlignment="Left" Height="26" Margin="0,0,0,0" VerticalAlignment="Top" Width="900">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="34*"/>
@@ -107,7 +111,6 @@
                 <Label x:Name="lblConnectionString" VerticalAlignment="Top" HorizontalAlignment="Left" Content="" Height="26" Grid.Column="2" FontWeight="Bold"/>
                 <Button x:Name="btnExit" BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="19" Click="btnExit_Click" Background="#FFB04949" Margin="0,0,0,0" Grid.Column="3" SnapsToDevicePixels="True" FontWeight="Bold" FontFamily="BatmanForeverAlternate" ToolTip="Close"/>
                 <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="16" Margin="6,6,0,-10" VerticalAlignment="Top" Width="16" Source="Source/Icon/ECTunes Logo.ico"/>
-                <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="btnRefresh_Click" Background="White" Grid.ColumnSpan="2" Grid.Column="1" Margin="189,63,0,-59"/>
             </Grid>
         </Grid>
     </Border>

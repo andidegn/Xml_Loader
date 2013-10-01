@@ -231,7 +231,8 @@ namespace Config_Downloader {
                     SplitNameVersion(selectedNode, out carName, out version);
                     if (ShowConfirmDelete("car", selectedNode.Header.ToString())) {
                         if (source == Source.DB ? db.DeleteCar(customerName, carName, version) : XmlParser.DeleteCar(customerName, carName, version)) {
-                            InitRest();
+                            databaseCarSelected = false;
+                            UpdateXmlTreeview();
                             UpdateDatabaseTreeView();
                         }
                         else
@@ -242,7 +243,8 @@ namespace Config_Downloader {
                     String customerName = selectedNode.Header.ToString();
                     if (ShowConfirmDelete("customer", customerName) && MessageBox.Show("Are you absolutely sure you want to delete this customer?\n All this customers cars will also be deleted!", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) {
                         if (source == Source.DB ? db.DeleteCustomer(customerName) : XmlParser.DeleteCustomer(customerName)) {
-                            InitRest();
+                            databaseCarSelected = false;
+                            UpdateXmlTreeview();
                             UpdateDatabaseTreeView();
                         }
                         else

@@ -9,7 +9,7 @@
     Background="Transparent"
     WindowStyle="None"
     SizeToContent="WidthAndHeight"
-    FocusManager.FocusedElement= "{Binding ElementName=txbPassword}">
+    FocusManager.FocusedElement= "{Binding ElementName=tbxPassword}">
     <Border CornerRadius="0"
         BorderBrush="#FFB9B9B9"
         BorderThickness="1"
@@ -38,7 +38,7 @@
                     Source="/Config Downloader;component/Source/Icon/ECTunes Logo.ico" Height="36">
                 </Image>
             </StackPanel>
-            <Label Grid.Column="1"
+            <Label x:Name="lblTitle" Grid.Column="1"
                 Grid.Row="0"
                 Grid.ColumnSpan="2"
                 FontSize="16"

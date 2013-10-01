@@ -40,7 +40,7 @@
                             <RowDefinition Height="369*"/>
                         </Grid.RowDefinitions>
                         <Label x:Name="lblDatabase" Content="Database" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" FontSize="18" FontWeight="Bold"/>
-                        <TreeView x:Name="tvDatabaseView" HorizontalAlignment="Left" Width="284" Height="388" Margin="0,0,0,0" VerticalAlignment="Top" MouseDoubleClick="tvDatabaseView_MouseDoubleClick" FontSize="12" FontWeight="Normal" Grid.Column="0" Grid.Row="1"/>
+                        <TreeView x:Name="tvDatabaseView" HorizontalAlignment="Left" Width="284" Height="388" Margin="0,0,0,0" VerticalAlignment="Top" MouseDoubleClick="tvDatabaseView_MouseDoubleClick" FontSize="12" FontWeight="Normal" Grid.Column="0" Grid.Row="1" KeyUp="tvDatabaseView_KeyUp"/>
                         <Grid x:Name="gridConnected" HorizontalAlignment="Left" Height="3" VerticalAlignment="Top" Width="284" Background="Red" Grid.Column="0" Grid.Row="1"/>
                         <Button x:Name="btnDeleteFromDatabase" Content="Delete" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="50" FontSize="12" FontWeight="Normal" Click="btnDeleteFromDatabase_Click" Background="White" Grid.Column="0" Height="22" Grid.Row="1"/>
                         <Grid Grid.Column="1" HorizontalAlignment="Left" Height="418" Grid.RowSpan="2" VerticalAlignment="Top" Width="585" Margin="0,10,0,-21">
@@ -65,16 +65,19 @@
                 <TabItem Header="Xml File" Background="White" IsSelected="True">
                     <Grid Background="White" HorizontalAlignment="Left" Width="872" Margin="0,0,0,0" Height="428">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="283*"/>
-                            <ColumnDefinition Width="586*"/>
+                            <ColumnDefinition Width="119*"/>
+                            <ColumnDefinition Width="75*"/>
+                            <ColumnDefinition Width="90*"/>
+                            <ColumnDefinition Width="588*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="38*"/>
                             <RowDefinition Height="369*"/>
                         </Grid.RowDefinitions>
-                        <Label x:Name="lblXml" Content="Xml File" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" FontSize="18" FontWeight="Bold"/>
-                        <TreeView x:Name="tvXmlView" HorizontalAlignment="Left" Width="284" Height="388" Margin="0,0,0,0" VerticalAlignment="Top" MouseDoubleClick="tvXmlView_MouseDoubleClick" FontSize="12" FontWeight="Normal" Grid.Column="0" Grid.Row="1"/>
-                        <GroupBox x:Name="gbxSelectedCar" Header="Selected Car" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Top" Height="102" Width="301" FontWeight="Normal" FontSize="12" BorderBrush="#FFCDD4D8" Grid.Row="1" Grid.Column="2">
+                        <Label x:Name="lblXml" Content="Xml File" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" FontSize="18" FontWeight="Bold" Height="34" Width="78"/>
+                        <Button x:Name="btnLoadFile" Content="Load File" HorizontalAlignment="Left" Margin="0,10,0,0" Grid.Row="0" VerticalAlignment="Top" Width="75" Background="{x:Null}" Grid.Column="1" Height="22" Click="btnLoadFile_Click"/>
+                        <TreeView x:Name="tvXmlView" HorizontalAlignment="Left" Width="284" Height="388" Margin="0,0,0,0" VerticalAlignment="Top" MouseDoubleClick="tvXmlView_MouseDoubleClick" FontSize="12" FontWeight="Normal" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" KeyUp="tvXmlView_KeyUp"/>
+                        <GroupBox x:Name="gbxSelectedCar" Header="Selected Car" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Top" Height="102" Width="301" FontWeight="Normal" FontSize="12" BorderBrush="#FFCDD4D8" Grid.Row="1" Grid.Column="3">
                             <Grid HorizontalAlignment="Left" Height="85" Margin="0,0,-2,-5" VerticalAlignment="Top" Width="291">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="2*"/>
@@ -89,15 +92,14 @@
                                 <TextBox x:Name="tbxXmlCarSelectedVersion" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="4,55,0,0" Grid.Column="2"/>
                             </Grid>
                         </GroupBox>
-                        <Button x:Name="btnSaveToDatabase" Content="Upload" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Click="btnSaveToDatabase_Click" FontWeight="Normal" FontSize="12" Grid.Column="2" Height="22" Background="{x:Null}">
+                        <Button x:Name="btnSaveToDatabase" Content="Upload" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Click="btnSaveToDatabase_Click" FontWeight="Normal" FontSize="12" Grid.Column="3" Height="22" Background="{x:Null}">
 
                         </Button>
-                        <Button x:Name="btnDeleteFromXml" Content="Delete" HorizontalAlignment="Left" Margin="209,366,0,0" VerticalAlignment="Top" Width="75" FontSize="12" FontWeight="Normal" Click="btnDeleteFromXml_Click" Grid.Row="1" Height="22" Background="{x:Null}"/>
+                        <Button x:Name="btnDeleteFromXml" Content="Delete" HorizontalAlignment="Left" Margin="15,366,0,0" VerticalAlignment="Top" Width="75" FontSize="12" FontWeight="Normal" Click="btnDeleteFromXml_Click" Grid.Row="1" Height="22" Background="{x:Null}" Grid.Column="2"/>
                     </Grid>
                 </TabItem>
             </TabControl>
-            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Height="22" Margin="138,63,0,0" VerticalAlignment="Top" Width="160" Grid.RowSpan="2">
-                <Button x:Name="btnConneft" Content="Connect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Background="{x:Null}" Margin="0, 0, 10, 0" Click="btnConneft_Click"/>
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Height="22" Margin="223,37,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1">
                 <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="btnRefresh_Click" Background="{x:Null}"/>
             </StackPanel>
             <Grid HorizontalAlignment="Left" Height="26" Margin="0,0,0,0" VerticalAlignment="Top" Width="900">

@@ -7,14 +7,15 @@ namespace Config_Downloader.View {
     /// Interaction logic for LoginScreen.xaml
     /// </summary> 
     public partial class LoginScreen : Window {
-        public LoginScreen() {
+        public LoginScreen(String title) {
             InitializeComponent();
-            FocusManager.SetFocusedElement(this, tbxPassword);
+            if (title != null && title.Length > 0)
+                lblTitle.Content = title;
         }
 
         public String GetPassword() {
-                this.Close();
-                return tbxPassword.Password;
+            this.Close();
+            return tbxPassword.Password;
         }
 
         private void btnLogin_Click(object sender, RoutedEventArgs e) {

@@ -8,6 +8,7 @@ namespace ECTunes.Util {
     public static class XmlParser {
 
         private static String FILE_PATH;
+        public static readonly String DEFAULT_FILE_PATH = @"files\myXmlFile.xml";
         private static XmlDocument XD; 
         private static XmlNode ROOT_NODE;
         public static readonly String VERSION_FORMAT = "yyyy-MM-dd HH:mm:ss:fff";
@@ -19,7 +20,10 @@ namespace ECTunes.Util {
         /// <returns></returns>
         public static XmlNode GetRootNode(String filePath) {
             if (XD == null || !FILE_PATH.Equals(filePath)) {
-                FILE_PATH = filePath;
+                if (filePath == null)
+                    FILE_PATH = DEFAULT_FILE_PATH;
+                else
+                    FILE_PATH = filePath;
                 LoadFile(filePath);
             }
             ROOT_NODE = XD.SelectSingleNode("/Root/ConfigsFinal");
@@ -27,7 +31,7 @@ namespace ECTunes.Util {
         }
 
         public static XmlNode GetRootNode() {
-            return GetRootNode(@"files\myXmlFile.xml");
+            return GetRootNode(DEFAULT_FILE_PATH);
         }
 
         private static void LoadFile(String filePath) {

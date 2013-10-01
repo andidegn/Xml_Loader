@@ -69,19 +69,25 @@ namespace Config_Downloader {
         };
 
         public MainWindow() {
+            InitializeComponent();
+            InitRest();
+            if (DEBUG) lblConnectionString.Content = connectionString;
+        }
+
+        private void InitRest() {
             filePath = XmlParser.DEFAULT_FILE_PATH;
             String password = ShowPasswordDialog(null);
             if (password == null)
                 Exit();
             SetupChannel(password);
-            InitializeComponent();
-            InitRest();
+            databaseCarSelected = false;
+            UpdateXmlTreeview();
             connectThread = new Thread(new ThreadStart(() => TryConnect()));
             connectThread.SetApartmentState(ApartmentState.STA);
             connectThread.Start();
-            if (DEBUG) lblConnectionString.Content = connectionString;
         }
 
+        #region Dialogs
         /// <summary>
         /// Opens a file dialog box to select the desired xml file
         /// </summary>
@@ -108,7 +114,9 @@ namespace Config_Downloader {
             else
                 return null;
         }
+        #endregion
 
+        #region Connection
         private void SetupChannel(String password) {
             IDictionary props = new Hashtable();
             props["port"] = 0;
@@ -126,11 +134,6 @@ namespace Config_Downloader {
                 ChannelServices.UnregisterChannel(ChannelServices.GetChannel(channelName));
             ChannelServices.RegisterChannel(channel, true);
             loggedIn = true;
-        }
-
-        private void InitRest() {
-            databaseCarSelected = false;
-            UpdateXmlTreeview();
         }
 
         private delegate void udbvDelegate();
@@ -183,7 +186,9 @@ namespace Config_Downloader {
             else
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(() => Application.Current.Shutdown()));
         }
+        #endregion
 
+        #region Upload / Download / Delete
         /// <summary>
         /// Saves a customer, a car, a parameter list and a signal list to the the xml file
         /// </summary>
@@ -210,6 +215,42 @@ namespace Config_Downloader {
                 }
         }
 
+        private void Delete(Source source) {
+            TreeViewItem selectedNode = null;
+            if (source == Source.DB)
+                selectedNode = tvDatabaseView.SelectedItem as TreeViewItem;
+            else
+                selectedNode = tvXmlView.SelectedItem as TreeViewItem;
+            if (selectedNode == null)
+                return;
+            if (ShowPasswordDialog("Please type password to Delete!") == "yt")
+                if (selectedNode.Parent is TreeViewItem) {
+                    String customerName = (selectedNode.Parent as TreeViewItem).Header.ToString();
+                    String carName;
+                    DateTime version;
+                    SplitNameVersion(selectedNode, out carName, out version);
+                    if (ShowConfirmDelete("car", selectedNode.Header.ToString())) {
+                        if (source == Source.DB ? db.DeleteCar(customerName, carName, version) : XmlParser.DeleteCar(customerName, carName, version)) {
+                            InitRest();
+                            UpdateDatabaseTreeView();
+                        }
+                        else
+                            MessageBox.Show("An error has occurred!");
+                    }
+                }
+                else {
+                    String customerName = selectedNode.Header.ToString();
+                    if (ShowConfirmDelete("customer", customerName) && MessageBox.Show("Are you absolutely sure you want to delete this customer?\n All this customers cars will also be deleted!", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) {
+                        if (source == Source.DB ? db.DeleteCustomer(customerName) : XmlParser.DeleteCustomer(customerName)) {
+                            InitRest();
+                            UpdateDatabaseTreeView();
+                        }
+                        else
+                            MessageBox.Show("An error has occurred!");
+                    }
+                }
+        }
+
         private void ResetSelectedCar() {
             tbxXmlCarSelectedCar.Clear();
             tbxXmlCarSelectedCustomer.Clear();
@@ -218,7 +259,9 @@ namespace Config_Downloader {
             xmlCarSelectedCar = null;
             xmlCarSelectedVersion = DateTime.Now;
         }
+        #endregion
 
+        #region GUI Update
         /// <summary>
         /// Updates the treeview of the database
         /// </summary>
@@ -266,7 +309,9 @@ namespace Config_Downloader {
                 ShowError("An error occurred while trying to read 'myXmlFile.xml'.\n\rPlease make sure the file is accessible in: ..\\files\\\n");
             }
         }
+        #endregion
 
+        #region Misc
         private void SplitNameVersion(TreeViewItem selectedNode, out String name, out DateTime version) {
             String[] words = Regex.Split(selectedNode.Header.ToString(), CAR_VERSION_SEPERATOR);
             name = words[0];
@@ -277,43 +322,9 @@ namespace Config_Downloader {
             else
                 version = DateTime.MinValue;
         }
+        #endregion
 
-        private void Delete(Source source) {
-            TreeViewItem selectedNode = null;
-            if (source == Source.DB)
-                selectedNode = tvDatabaseView.SelectedItem as TreeViewItem;
-            else
-                selectedNode = tvXmlView.SelectedItem as TreeViewItem;
-            if (selectedNode == null)
-                return;
-            if (ShowPasswordDialog("Please type password to Delete!") == "yt")
-                if (selectedNode.Parent is TreeViewItem) {
-                    String customerName = (selectedNode.Parent as TreeViewItem).Header.ToString();
-                    String carName;
-                    DateTime version;
-                    SplitNameVersion(selectedNode, out carName, out version);
-                    if (ShowConfirmDelete("car", selectedNode.Header.ToString())) {
-                        if (source == Source.DB ? db.DeleteCar(customerName, carName, version) : XmlParser.DeleteCar(customerName, carName, version)) {
-                            InitRest();
-                            UpdateDatabaseTreeView();
-                        }
-                        else
-                            MessageBox.Show("An error has occurred!");
-                    }
-                }
-                else {
-                    String customerName = selectedNode.Header.ToString();
-                    if (ShowConfirmDelete("customer", customerName) && MessageBox.Show("Are you absolutely sure you want to delete this customer?\n All this customers cars will also be deleted!", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) {
-                        if (source == Source.DB ? db.DeleteCustomer(customerName) : XmlParser.DeleteCustomer(customerName)) {
-                            InitRest();
-                            UpdateDatabaseTreeView();
-                        }
-                        else
-                            MessageBox.Show("An error has occurred!");
-                    }
-                }
-        }
-
+        #region MessageBoxes
         private bool ShowConfirmDelete(String type, String objectToDelete) {
             return MessageBox.Show(String.Format("Are you sure you want to delete {0}: '{1}'?\nThis operation cannot be undone!", type, objectToDelete), "Delete", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.Yes ? true : false;
         }
@@ -325,8 +336,11 @@ namespace Config_Downloader {
         private void ShowError(String text) {
             MessageBox.Show(this, text, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        #endregion
 
         #region Event Handlers
+
+        #region MouseDoubleClick
         private void tvDatabaseView_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             TreeViewItem selectedNode = tvDatabaseView.SelectedItem as TreeViewItem;
             if (connected && selectedNode != null && selectedNode.Parent as TreeViewItem != null) {
@@ -361,7 +375,9 @@ namespace Config_Downloader {
                 xmlCarSelected = true;
             }
         }
+        #endregion
 
+        #region Click
         private void btnToXml_Click(object sender, RoutedEventArgs e) {
             if (databaseCarSelected) {
                 SaveToXml();
@@ -396,15 +412,6 @@ namespace Config_Downloader {
             Application.Current.Shutdown(0);
         }
 
-        private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e) {
-            Exit();
-        }
-
-        private void mainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            DragMove();
-        }
-        #endregion
-
         private void btnLoadFile_Click(object sender, RoutedEventArgs e) {
             String path = ShowOpenFileDialog();
             if (path.Length > 0) {
@@ -412,7 +419,9 @@ namespace Config_Downloader {
                 UpdateXmlTreeview();
             }
         }
+        #endregion
 
+        #region Key-press
         private void tvDatabaseView_KeyUp(object sender, KeyEventArgs e) {
             switch (e.Key) {
                 case Key.Delete:
@@ -432,5 +441,17 @@ namespace Config_Downloader {
                     break;
             }
         }
+        #endregion
+
+        #region Other
+        private void mainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            DragMove();
+        }
+
+        private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e) {
+            Exit();
+        }
+        #endregion
+        #endregion
     }
 }

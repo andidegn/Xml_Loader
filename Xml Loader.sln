@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Config Downloader", "Config Downloader\Config Downloader.csproj", "{87D3DC8C-813E-499D-9CDC-F943F715009D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xml Loader", "Config Downloader\Xml Loader.csproj", "{87D3DC8C-813E-499D-9CDC-F943F715009D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
